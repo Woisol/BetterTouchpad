@@ -1,5 +1,7 @@
 # BetterTouchpad
 
+原项目来源于：[fasa70/BetterTouchpad](https://github.com/fasa70/BetterTouchpad)，在原项目基础上针对欧系设备（ColorOS）优化，并使用 Miuix 组件库重写 UI。
+
 > 让 Android 触控板像鼠标一样好用
 
 ---
