@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         TopAppBar(
                             title = stringResource(R.string.app_name),
-                            subtitle = stringResource(R.string.dashboard_title)
+                            subtitle = stringResource(R.string.app_desc)
                         )
                     },
                     bottomBar = {
@@ -132,6 +132,9 @@ class MainActivity : ComponentActivity() {
             )
             AboutCard(
                 onOpenProject = {
+                    uriHandler.openUri("https://github.com/Woisol/BetterTouchpad")
+                },
+                onOpenOrigin = {
                     uriHandler.openUri("https://github.com/fasa70/BetterTouchpad")
                 }
             )
@@ -247,7 +250,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun AboutCard(onOpenProject: () -> Unit) {
+    private fun AboutCard(onOpenProject: () -> Unit, onOpenOrigin: () -> Unit = {}) {
         MiuixSectionCard(
             title = stringResource(R.string.about_title),
             subtitle = stringResource(R.string.about_subtitle)
@@ -262,6 +265,12 @@ class MainActivity : ComponentActivity() {
                 fontSize = 12.sp,
                 color = MiuixTheme.colorScheme.primary,
                 modifier = Modifier.clickable(onClick = onOpenProject)
+            )
+            MiuixText(
+                text = stringResource(R.string.footer_star_origin),
+                fontSize = 12.sp,
+                color = MiuixTheme.colorScheme.primary,
+                modifier = Modifier.clickable(onClick = onOpenOrigin)
             )
         }
     }

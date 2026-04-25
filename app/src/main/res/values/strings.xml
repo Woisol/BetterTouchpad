@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Better Touchpad</string>
-    <string name="dashboard_title">触控板控制台</string>
+    <string name="app_name">Better Touchpad - WU</string>
+    <string name="app_desc">更好的触控板 - WU 版</string>
     <string name="nav_home">主页</string>
     <string name="nav_settings">设置</string>
     <string name="nav_overview">总览</string>
@@ -71,6 +71,7 @@
 坐标最大值：X=%2$d  Y=%3$d
 （启动服务后自动更新）</string>
 
-    <string name="footer_author">by 风洒青泥</string>
+    <string name="footer_author">Modified by Woisol-G，原作者：风洒青泥</string>
     <string name="footer_star">觉得好用的话别忘了在 GitHub 上给我点个 star~</string>
+    <string name="footer_star_origin">原作者仓库</string>
 </resources>

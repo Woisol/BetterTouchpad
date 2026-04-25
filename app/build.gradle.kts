@@ -13,11 +13,11 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.fasa70.bettertouchpad"
+        applicationId = "com.woisol.bettertouchpad"
         minSdk = 28
         targetSdk = 36
         versionCode = 4
-        versionName = "1.2.0"
+        versionName = "1.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
