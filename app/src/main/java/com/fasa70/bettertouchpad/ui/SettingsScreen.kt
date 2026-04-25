@@ -1,23 +1,29 @@
 package com.fasa70.bettertouchpad.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fasa70.bettertouchpad.R
 import com.fasa70.bettertouchpad.SettingsRepository
+import com.fasa70.bettertouchpad.ui.components.MiuixSectionCard
+import com.fasa70.bettertouchpad.ui.theme.MiuixSpacing
+import top.yukonga.miuix.kmp.basic.Slider as MiuixSlider
+import top.yukonga.miuix.kmp.basic.Switch as MiuixSwitch
+import top.yukonga.miuix.kmp.basic.Text as MiuixText
+import top.yukonga.miuix.kmp.basic.TextField as MiuixTextField
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun SettingsScreen(repo: SettingsRepository) {
@@ -28,244 +34,190 @@ fun SettingsScreen(repo: SettingsRepository) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+            .padding(horizontal = MiuixSpacing.md, vertical = MiuixSpacing.xs),
+        verticalArrangement = Arrangement.spacedBy(MiuixSpacing.sm)
     ) {
-        // ── Feature toggles ───────────────────────────────────────────────
-        Text("功能开关", fontSize = 18.sp, fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(vertical = 8.dp))
-
-        FeatureSwitch("单指划动 (移动光标)", settings.singleFingerMove) {
-            repo.update { copy(singleFingerMove = it) }
-        }
-        FeatureSwitch("单指单击 (鼠标左键)", settings.singleFingerTap) {
-            repo.update { copy(singleFingerTap = it) }
-        }
-        FeatureSwitch("按下触控板 (鼠标左键)", settings.physicalClick) {
-            repo.update { copy(physicalClick = it) }
-        }
-        FeatureSwitch("轻触两下以拖移", settings.doubleTapDrag) {
-            repo.update { copy(doubleTapDrag = it) }
-        }
-        FeatureSwitch("双指单击 (鼠标右键)", settings.twoFingerTap) {
-            repo.update { copy(twoFingerTap = it) }
-        }
-        FeatureSwitch("双指划动 (鼠标滚轮)", settings.twoFingerScroll) {
-            repo.update { copy(twoFingerScroll = it) }
-        }
-        FeatureSwitch("自然滚动 (内容滚动方向与手指方向一致)", settings.naturalScroll) {
-            repo.update { copy(naturalScroll = it) }
-        }
-        FeatureSwitch("双指边缘内划 (返回上一级)", settings.edgeSwipe) {
-            repo.update { copy(edgeSwipe = it) }
-        }
-        FeatureSwitch("三指手势 (返回桌面/截图/分屏)", settings.threeFingerMove) {
-            repo.update { copy(threeFingerMove = it) }
-        }
-        FeatureSwitch("三指单击 (鼠标中键)", settings.threeFingerMiddleClick) {
-            repo.update { copy(threeFingerMiddleClick = it) }
-        }
-        Text(
-            "三指上划和左右滑会映射到底部手势条注入（动画更自然）；三指下划保留系统触摸注入路径。",
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(vertical = 4.dp)
+        MiuixText(
+            text = stringResource(R.string.settings_page_title),
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+            modifier = Modifier.padding(vertical = MiuixSpacing.xs)
         )
 
-        // ── Sensitivity ───────────────────────────────────────────────────
-        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-        Text("灵敏度设置", fontSize = 18.sp, fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp))
-
-        SensitivityRow(
-            label = "光标灵敏度",
-            value = settings.cursorSensitivity,
-            range = 0.01f..5.0f,
-            onValueChange = { repo.update { copy(cursorSensitivity = it) } },
-            onDone = { focusManager.clearFocus() }
-        )
-        SensitivityRow(
-            label = "滚轮灵敏度",
-            value = settings.scrollSensitivity,
-            range = 0.01f..5.0f,
-            onValueChange = { repo.update { copy(scrollSensitivity = it) } },
-            onDone = { focusManager.clearFocus() }
-        )
-        SensitivityRow(
-            label = "触摸注入灵敏度（影响双指边缘內划和三指手势）",
-            value = settings.touchInjectSpeed,
-            range = 0.01f..3.0f,
-            onValueChange = { repo.update { copy(touchInjectSpeed = it) } },
-            onDone = { focusManager.clearFocus() }
-        )
-
-        // ── Edge threshold ────────────────────────────────────────────────
-        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-        Text("其他设置", fontSize = 18.sp, fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 4.dp))
-
-        SensitivityRow(
-            label = "边缘触发区域宽度 (占X轴比例)",
-            value = settings.edgeThreshold,
-            range = 0.01f..0.30f,
-            onValueChange = { repo.update { copy(edgeThreshold = it) } },
-            onDone = { focusManager.clearFocus() }
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        // Double-tap drag interval
-        Text("双击拖移间隔时间 (ms)", fontSize = 14.sp, modifier = Modifier.padding(top = 4.dp, bottom = 2.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+        MiuixSectionCard(
+            title = stringResource(R.string.section_feature_toggles),
+            subtitle = stringResource(R.string.section_feature_toggles_subtitle)
         ) {
-            Slider(
-                value = settings.doubleTapIntervalMs.toFloat(),
-                onValueChange = { repo.update { copy(doubleTapIntervalMs = it.toInt()) } },
-                valueRange = 10f..500f,
-                modifier = Modifier.weight(1f)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            var dtText by remember(settings.doubleTapIntervalMs) { mutableStateOf(settings.doubleTapIntervalMs.toString()) }
-            OutlinedTextField(
-                value = dtText,
-                onValueChange = { dtText = it },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(onDone = {
-                    dtText.toIntOrNull()?.takeIf { it in 50..500 }?.let {
-                        repo.update { copy(doubleTapIntervalMs = it) }
-                    }
-                    focusManager.clearFocus()
-                }),
-                singleLine = true,
-                modifier = Modifier.width(88.dp),
-                textStyle = LocalTextStyle.current.copy(fontSize = 13.sp)
-            )
-        }
-        Text(
-            "两次点击间隔不超过此时间时，触发双击拖移",
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // ── Axis correction ───────────────────────────────────────────────
-        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-        Text("触摸注入方向校正", fontSize = 18.sp, fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 4.dp))
-        Text(
-            "当双指/三指手势注入的触摸方向不正确时，使用以下选项进行修正。\n默认开启xy轴对调和反转y轴",
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        FeatureSwitch("XY 轴对调 (交换横纵方向)", settings.swapAxes) {
-            repo.update { copy(swapAxes = it) }
-        }
-        FeatureSwitch("反转 X 轴 (水平方向取反)", settings.invertX) {
-            repo.update { copy(invertX = it) }
-        }
-        FeatureSwitch("反转 Y 轴 (垂直方向取反)", settings.invertY) {
-            repo.update { copy(invertY = it) }
-        }
-
-        // ── Auto-detect device ────────────────────────────────────────────
-        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-        Text("兼容性设置", fontSize = 18.sp, fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 4.dp))
-
-        FeatureSwitch("独占设备 (EVIOCGRAB)", settings.exclusiveGrab) {
-            repo.update { copy(exclusiveGrab = it) }
-        }
-        Text(
-            "开启后，触控板输入事件将被本应用独占，系统其他进程无法读取，以防止跟系统手势产生冲突。",
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        FeatureSwitch("自动匹配触控板设备路径和坐标值范围", settings.autoDetectDevice) {
-            repo.update { copy(autoDetectDevice = it) }
-        }
-        Text(
-            "开启后，程序启动时自动获取触控板设备路径及坐标最大值\n如程序未能正常运行，可尝试关闭此选项",
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        if (!settings.autoDetectDevice) {
-            Spacer(modifier = Modifier.height(4.dp))
-            // Device path input
-            var devicePathText by remember(settings.devicePath) { mutableStateOf(settings.devicePath) }
-            OutlinedTextField(
-                value = devicePathText,
-                onValueChange = { devicePathText = it },
-                label = { Text("设备路径（如 /dev/input/event5）") },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = {
-                    if (devicePathText.isNotBlank()) repo.update { copy(devicePath = devicePathText.trim()) }
-                    focusManager.clearFocus()
-                }),
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            )
-
-            // Coordinate range inputs
-            Text(
-                "触控板坐标最大值",
-                fontSize = 14.sp,
-                modifier = Modifier.padding(top = 8.dp, bottom = 2.dp)
-            )
-            CoordInput("X 轴最大值", settings.padMaxX.toString()) { v ->
-                v.toIntOrNull()?.takeIf { it > 0 }?.let { repo.update { copy(padMaxX = it) } }
+            FeatureSwitch(stringResource(R.string.toggle_single_finger_move), settings.singleFingerMove) {
+                repo.update { copy(singleFingerMove = it) }
             }
-            CoordInput("Y 轴最大值", settings.padMaxY.toString()) { v ->
-                v.toIntOrNull()?.takeIf { it > 0 }?.let { repo.update { copy(padMaxY = it) } }
+            FeatureSwitch(stringResource(R.string.toggle_single_finger_tap), settings.singleFingerTap) {
+                repo.update { copy(singleFingerTap = it) }
             }
-        } else {
-            // Show detected values as read-only info when auto-detect is on
-            Text(
-                "当前设备路径：${settings.devicePath}\n坐标最大值：X=${settings.padMaxX}  Y=${settings.padMaxY}\n（启动服务后自动更新）",
+            FeatureSwitch(stringResource(R.string.toggle_physical_click), settings.physicalClick) {
+                repo.update { copy(physicalClick = it) }
+            }
+            FeatureSwitch(stringResource(R.string.toggle_double_tap_drag), settings.doubleTapDrag) {
+                repo.update { copy(doubleTapDrag = it) }
+            }
+            FeatureSwitch(stringResource(R.string.toggle_two_finger_tap), settings.twoFingerTap) {
+                repo.update { copy(twoFingerTap = it) }
+            }
+            FeatureSwitch(stringResource(R.string.toggle_two_finger_scroll), settings.twoFingerScroll) {
+                repo.update { copy(twoFingerScroll = it) }
+            }
+            FeatureSwitch(stringResource(R.string.toggle_natural_scroll), settings.naturalScroll) {
+                repo.update { copy(naturalScroll = it) }
+            }
+            FeatureSwitch(stringResource(R.string.toggle_edge_swipe), settings.edgeSwipe) {
+                repo.update { copy(edgeSwipe = it) }
+            }
+            FeatureSwitch(stringResource(R.string.toggle_three_finger_move), settings.threeFingerMove) {
+                repo.update { copy(threeFingerMove = it) }
+            }
+            FeatureSwitch(stringResource(R.string.toggle_three_finger_middle_click), settings.threeFingerMiddleClick) {
+                repo.update { copy(threeFingerMiddleClick = it) }
+            }
+            MiuixText(
+                text = stringResource(R.string.three_finger_note),
                 fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(vertical = 4.dp)
+                color = MiuixTheme.colorScheme.onSurfaceVariantSummary
             )
         }
 
-        // Footer: centered small attribution + GitHub link
-        val uriHandler = LocalUriHandler.current
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        MiuixSectionCard(
+            title = stringResource(R.string.section_sensitivity),
+            subtitle = stringResource(R.string.section_sensitivity_subtitle)
         ) {
-            Text(
-                text = "by 风洒青泥",
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            SensitivityRow(
+                label = stringResource(R.string.sensitivity_cursor),
+                value = settings.cursorSensitivity,
+                range = 0.01f..5.0f,
+                onValueChange = { repo.update { copy(cursorSensitivity = it) } },
+                onDone = { focusManager.clearFocus() }
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "觉得好用的话别忘了在github上给我点个star⭐~",
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable {
-                    uriHandler.openUri("https://github.com/fasa70/BetterTouchpad")
+            SensitivityRow(
+                label = stringResource(R.string.sensitivity_scroll),
+                value = settings.scrollSensitivity,
+                range = 0.01f..5.0f,
+                onValueChange = { repo.update { copy(scrollSensitivity = it) } },
+                onDone = { focusManager.clearFocus() }
+            )
+            SensitivityRow(
+                label = stringResource(R.string.sensitivity_touch_inject),
+                value = settings.touchInjectSpeed,
+                range = 0.01f..3.0f,
+                onValueChange = { repo.update { copy(touchInjectSpeed = it) } },
+                onDone = { focusManager.clearFocus() }
+            )
+            SensitivityRow(
+                label = stringResource(R.string.sensitivity_edge_threshold),
+                value = settings.edgeThreshold,
+                range = 0.01f..0.30f,
+                onValueChange = { repo.update { copy(edgeThreshold = it) } },
+                onDone = { focusManager.clearFocus() }
+            )
+        }
+
+        MiuixSectionCard(
+            title = stringResource(R.string.section_drag_interval),
+            subtitle = stringResource(R.string.section_drag_interval_subtitle)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MiuixSlider(
+                    value = settings.doubleTapIntervalMs.toFloat(),
+                    onValueChange = { repo.update { copy(doubleTapIntervalMs = it.toInt()) } },
+                    valueRange = 10f..500f,
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(MiuixSpacing.xs))
+                var dtText by remember(settings.doubleTapIntervalMs) {
+                    mutableStateOf(settings.doubleTapIntervalMs.toString())
                 }
-            )
+                MiuixTextField(
+                    value = dtText,
+                    onValueChange = { dtText = it },
+                    label = stringResource(R.string.section_drag_interval),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(onDone = {
+                        dtText.toIntOrNull()?.takeIf { it in 50..500 }?.let {
+                            repo.update { copy(doubleTapIntervalMs = it) }
+                        }
+                        focusManager.clearFocus()
+                    }),
+                    singleLine = true,
+                    modifier = Modifier.width(90.dp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
+                )
+            }
+        }
+
+        MiuixSectionCard(
+            title = stringResource(R.string.section_axis_correction),
+            subtitle = stringResource(R.string.section_axis_correction_subtitle)
+        ) {
+            FeatureSwitch(stringResource(R.string.toggle_swap_axes), settings.swapAxes) {
+                repo.update { copy(swapAxes = it) }
+            }
+            FeatureSwitch(stringResource(R.string.toggle_invert_x), settings.invertX) {
+                repo.update { copy(invertX = it) }
+            }
+            FeatureSwitch(stringResource(R.string.toggle_invert_y), settings.invertY) {
+                repo.update { copy(invertY = it) }
+            }
+        }
+
+        MiuixSectionCard(
+            title = stringResource(R.string.section_compatibility),
+            subtitle = stringResource(R.string.section_compatibility_subtitle)
+        ) {
+            FeatureSwitch(stringResource(R.string.toggle_exclusive_grab), settings.exclusiveGrab) {
+                repo.update { copy(exclusiveGrab = it) }
+            }
+            FeatureSwitch(stringResource(R.string.toggle_auto_detect), settings.autoDetectDevice) {
+                repo.update { copy(autoDetectDevice = it) }
+            }
+
+            if (!settings.autoDetectDevice) {
+                var devicePathText by remember(settings.devicePath) { mutableStateOf(settings.devicePath) }
+                MiuixTextField(
+                    value = devicePathText,
+                    onValueChange = { devicePathText = it },
+                    label = stringResource(R.string.device_path_label),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        if (devicePathText.isNotBlank()) {
+                            repo.update { copy(devicePath = devicePathText.trim()) }
+                        }
+                        focusManager.clearFocus()
+                    }),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                CoordInput(stringResource(R.string.pad_max_x_label), settings.padMaxX.toString()) { v ->
+                    v.toIntOrNull()?.takeIf { it > 0 }?.let { repo.update { copy(padMaxX = it) } }
+                }
+                CoordInput(stringResource(R.string.pad_max_y_label), settings.padMaxY.toString()) { v ->
+                    v.toIntOrNull()?.takeIf { it > 0 }?.let { repo.update { copy(padMaxY = it) } }
+                }
+            } else {
+                MiuixText(
+                    text = stringResource(
+                        R.string.device_detected_value,
+                        settings.devicePath,
+                        settings.padMaxX,
+                        settings.padMaxY
+                    ),
+                    fontSize = 12.sp,
+                    color = MiuixTheme.colorScheme.onSurfaceVariantSummary
+                )
+            }
         }
     }
 }
@@ -275,12 +227,12 @@ private fun FeatureSwitch(label: String, checked: Boolean, onCheckedChange: (Boo
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 2.dp),
+            .padding(vertical = MiuixSpacing.xxs),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(label, modifier = Modifier.weight(1f))
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
+        MiuixText(label, modifier = Modifier.weight(1f), fontSize = 14.sp)
+        MiuixSwitch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
 
@@ -310,13 +262,21 @@ private fun SensitivityRow(
         isEditing = false
     }
 
-    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
-        Text(label, fontSize = 14.sp, modifier = Modifier.padding(bottom = 2.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = MiuixSpacing.xxs)
+    ) {
+        MiuixText(
+            label,
+            fontSize = 14.sp,
+            modifier = Modifier.padding(bottom = MiuixSpacing.xxs)
+        )
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Slider(
+            MiuixSlider(
                 value = value,
                 onValueChange = {
                     if (!isEditing) {
@@ -327,13 +287,14 @@ private fun SensitivityRow(
                 valueRange = range,
                 modifier = Modifier.weight(1f)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            OutlinedTextField(
+            Spacer(modifier = Modifier.width(MiuixSpacing.xs))
+            MiuixTextField(
                 value = textValue,
                 onValueChange = {
                     textValue = it
                     isEditing = true
                 },
+                label = label,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction    = ImeAction.Done
@@ -342,8 +303,8 @@ private fun SensitivityRow(
                     onDone = { commitText(textValue); onDone() }
                 ),
                 singleLine = true,
-                modifier = Modifier.width(88.dp),
-                textStyle = LocalTextStyle.current.copy(fontSize = 13.sp)
+                modifier = Modifier.width(180.dp),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp)
             )
         }
     }
@@ -352,17 +313,17 @@ private fun SensitivityRow(
 @Composable
 private fun CoordInput(label: String, value: String, onValueChange: (String) -> Unit) {
     var text by remember(value) { mutableStateOf(value) }
-    OutlinedTextField(
+    MiuixTextField(
         value = text,
         onValueChange = { newVal ->
             text = newVal
             onValueChange(newVal)
         },
-        label = { Text(label) },
+        label = label,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(vertical = MiuixSpacing.xxs)
     )
 }

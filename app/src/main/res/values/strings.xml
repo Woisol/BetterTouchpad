@@ -1,3 +1,76 @@
 <resources>
     <string name="app_name">Better Touchpad</string>
+    <string name="dashboard_title">触控板控制台</string>
+    <string name="nav_home">主页</string>
+    <string name="nav_settings">设置</string>
+    <string name="nav_overview">总览</string>
+    <string name="nav_gesture">手势</string>
+    <string name="nav_calibration">校准</string>
+    <string name="nav_compatibility">兼容</string>
+
+    <string name="service_status_title">服务控制</string>
+    <string name="service_status_desc">启动或停止底层触控板服务</string>
+    <string name="service_running">运行中</string>
+    <string name="service_stopped">已停止</string>
+    <string name="service_action_hint">切换后约 1 秒同步状态</string>
+    <string name="start_service">启动</string>
+    <string name="stop_service">停止</string>
+    <string name="service_card_running_title">服务已开启</string>
+    <string name="service_card_running_desc">触控板手势正在后台接管输入。</string>
+    <string name="service_card_stopped_title">服务未开启</string>
+    <string name="service_card_stopped_desc">启动服务后才能使用触控板手势。</string>
+    <string name="service_card_tap_hint">点击卡片或按钮可切换状态</string>
+    <string name="overview_status_title">状态详情</string>
+    <string name="overview_status_subtitle">当前服务、设备与软件版本信息</string>
+    <string name="overview_service_state">服务状态：%1$s</string>
+    <string name="overview_device_auto">设备模式：自动匹配（%1$s）</string>
+    <string name="overview_device_manual">设备模式：手动指定（%1$s）</string>
+    <string name="overview_coordinate_state">坐标范围：X=%1$d  Y=%2$d</string>
+    <string name="overview_version_state">软件版本：%1$s（%2$d）</string>
+    <string name="about_title">关于</string>
+    <string name="about_subtitle">项目与作者信息</string>
+
+    <string name="settings_page_title">配置中心</string>
+    <string name="section_feature_toggles">功能开关</string>
+    <string name="section_feature_toggles_subtitle">启用或关闭基础触控行为</string>
+    <string name="section_sensitivity">灵敏度设置</string>
+    <string name="section_sensitivity_subtitle">调整光标、滚轮与手势注入速度</string>
+    <string name="section_drag_interval">双击拖移间隔</string>
+    <string name="section_drag_interval_subtitle">两次点击最大间隔（毫秒）</string>
+    <string name="section_axis_correction">触摸注入方向校正</string>
+    <string name="section_axis_correction_subtitle">默认建议开启 XY 轴对调和反转 Y 轴</string>
+    <string name="section_compatibility">兼容性设置</string>
+    <string name="section_compatibility_subtitle">适配不同设备的输入节点和坐标范围</string>
+
+    <string name="toggle_single_finger_move">单指划动（移动光标）</string>
+    <string name="toggle_single_finger_tap">单指单击（鼠标左键）</string>
+    <string name="toggle_physical_click">按下触控板（鼠标左键）</string>
+    <string name="toggle_double_tap_drag">轻触两下以拖移</string>
+    <string name="toggle_two_finger_tap">双指单击（鼠标右键）</string>
+    <string name="toggle_two_finger_scroll">双指划动（鼠标滚轮）</string>
+    <string name="toggle_natural_scroll">自然滚动（内容方向与手指一致）</string>
+    <string name="toggle_edge_swipe">双指边缘内划（返回上一级）</string>
+    <string name="toggle_three_finger_move">三指手势（返回桌面/截图/分屏）</string>
+    <string name="toggle_three_finger_middle_click">三指单击（鼠标中键）</string>
+    <string name="toggle_swap_axes">XY 轴对调（交换横纵方向）</string>
+    <string name="toggle_invert_x">反转 X 轴（水平取反）</string>
+    <string name="toggle_invert_y">反转 Y 轴（垂直取反）</string>
+    <string name="toggle_exclusive_grab">独占设备（EVIOCGRAB）</string>
+    <string name="toggle_auto_detect">自动匹配设备路径与坐标值</string>
+
+    <string name="sensitivity_cursor">光标灵敏度</string>
+    <string name="sensitivity_scroll">滚轮灵敏度</string>
+    <string name="sensitivity_touch_inject">触摸注入灵敏度（影响边缘内划和三指手势）</string>
+    <string name="sensitivity_edge_threshold">边缘触发区域宽度（占 X 轴比例）</string>
+
+    <string name="three_finger_note">三指上划和左右滑会映射到底部手势条注入，三指下划保留系统触摸注入路径。</string>
+    <string name="device_path_label">设备路径（如 /dev/input/event5）</string>
+    <string name="pad_max_x_label">X 轴最大值</string>
+    <string name="pad_max_y_label">Y 轴最大值</string>
+    <string name="device_detected_value">当前设备路径：%1$s
+坐标最大值：X=%2$d  Y=%3$d
+（启动服务后自动更新）</string>
+
+    <string name="footer_author">by 风洒青泥</string>
+    <string name="footer_star">觉得好用的话别忘了在 GitHub 上给我点个 star~</string>
 </resources>
