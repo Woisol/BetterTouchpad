@@ -32,16 +32,41 @@ android {
             version = "3.22.1"
         }
     }
-
+    signingConfigs {
+        create("release") {
+            val storeFilePath = System.getenv("SIGNING_KEYSTORE_BASE64")?.let { null }
+            // CI 环境通过环境变量/Secrets 签名，本地构建回退到 debug签名
+            if (System.getenv("CI") == "true") {
+                storeFile = file("release.jks")
+                storePassword = System.getenv("SIGNING_STORE_PASSWORD")?: ""
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: ""
+                keyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: ""
+            } else {
+                // 本地构建使用 debug 签名（方便开发）
+                initWith(signingConfigs.getByName("debug"))
+            }
+        }
+    }
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
+    // buildTypes {
+    //     release {
+    //         isMinifyEnabled = false
+    //         proguardFiles(
+    //             getDefaultProguardFile("proguard-android-optimize.txt"),
+    //             "proguard-rules.pro"
+    //         )
+    //     }
+    // }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
